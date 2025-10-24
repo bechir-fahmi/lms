@@ -13,9 +13,12 @@ class FeaturedInstructorSectionSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([]);
-        FeaturedInstructor::create([
-            'id' => 1
-        ]);
+        // Get instructor IDs
+        $instructorIds = DB::table('users')->where('role', 'instructor')->pluck('id')->toArray();
+
+        FeaturedInstructor::updateOrCreate(
+            ['id' => 1],
+            ['instructor_ids' => json_encode($instructorIds)]
+        );
     }
 }
