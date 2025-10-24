@@ -14,7 +14,7 @@ class GlobalSettingInfoSeeder extends Seeder
     public function run(): void
     {
         $setting_data = [
-            'app_name' => 'SkillGro',
+            'app_name' => 'FluttLearn',
             'version' => '2.6.0',
             'logo' => 'uploads/website-images/logo.svg',
             'timezone' => 'Asia/Dhaka',
@@ -97,7 +97,7 @@ class GlobalSettingInfoSeeder extends Seeder
             'wasabi_region' => 'us-east-1',
             'wasabi_bucket' => 'wasabi_bucket',
             'wasabi_status' => 'inactive',
-            
+
             'aws_access_id' => 'aws_access_id',
             'aws_secret_key' => 'aws_secret_key',
             'aws_region' => 'us-east-1',
