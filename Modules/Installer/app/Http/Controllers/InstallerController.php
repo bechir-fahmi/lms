@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Modules\GlobalSetting\app\Models\Setting;
 use Modules\Installer\app\Enums\InstallerInfo;
 use Modules\Installer\app\Models\Configuration;
@@ -93,19 +94,41 @@ class InstallerController extends Controller
             }
 
             $deleteDummyData = false;
+            $withDummyData = false;
+
             if ($request->has('fresh_install') && $request->filled('fresh_install') && $request->fresh_install == 'on') {
                 $deleteDummyData = true;
                 Cache::put('fresh_install', true, now()->addMinutes(60));
-                $migration = $this->importDatabase( InstallerInfo::getFreshDatabaseFilePath() );
+                // Run migrations only
+                try {
+                    \Artisan::call('migrate', ['--force' => true]);
+                    // Initialize configuration
+                    Configuration::create(['config' => 'setup_complete', 'value' => 0]);
+                    Configuration::create(['config' => 'setup_stage', 'value' => 1]);
+                    $migration = true;
+                } catch (Exception $e) {
+                    Log::error($e->getMessage());
+                    $migration = 'Migration failed! ' . $e->getMessage();
+                }
             }else{
-                $migration = $this->importDatabase( InstallerInfo::getDummyDatabaseFilePath() );
+                // Run migrations and seed demo data
+                $withDummyData = true;
+                try {
+                    \Artisan::call('migrate', ['--force' => true]);
+                    // Initialize configuration before seeding
+                    Configuration::create(['config' => 'setup_complete', 'value' => 0]);
+                    Configuration::create(['config' => 'setup_stage', 'value' => 1]);
+                    \Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\DemoSeeder', '--force' => true]);
+                    $migration = true;
+                } catch (Exception $e) {
+                    Log::error($e->getMessage());
+                    $migration = 'Migration failed! ' . $e->getMessage();
+                }
             }
 
             if ($migration !== true) {
                 return response()->json(['success' => false, 'message' => $migration], 200);
             }
-
-            $this->changeEnvDatabaseConfig($request->except('reset_database'));
 
             if ($migration == true && $deleteDummyData) {
                 $this->removeDummyFiles();
@@ -114,6 +137,22 @@ class InstallerController extends Controller
             Cache::forget('fresh_install');
 
             session()->put('step-3-complete', true);
+
+            // Update .env file with database credentials
+            $this->changeEnvDatabaseConfig($request->except('reset_database'));
+
+            // Clear all caches to ensure new .env values are loaded
+            \Artisan::call('config:clear');
+            \Artisan::call('cache:clear');
+
+            // Reconnect to database with new credentials
+            DB::purge('mysql');
+            config(['database.connections.mysql.host' => $request->host]);
+            config(['database.connections.mysql.port' => $request->port]);
+            config(['database.connections.mysql.database' => $request->database]);
+            config(['database.connections.mysql.username' => $request->user]);
+            config(['database.connections.mysql.password' => $request->password]);
+            DB::reconnect('mysql');
 
             return response()->json(['success' => true, 'message' => 'Successfully setup the database'], 200);
         } catch (Exception $e) {
@@ -124,15 +163,21 @@ class InstallerController extends Controller
 
     public function account()
     {
-        $step = Configuration::stepExists();
-        if ( $step >= 1 && $step < 5 && $this->requirementsCompleteStatus()) {
-            $admin = $step >= 2 ? Admin::select('name','email')->first() : null;
-            return view( 'installer::account',compact('admin') );
+        try {
+            $step = Configuration::stepExists();
+            if ( $step >= 1 && $step < 5 && $this->requirementsCompleteStatus()) {
+                $admin = $step >= 2 ? Admin::select('name','email')->first() : null;
+                return view( 'installer::account',compact('admin') );
+            }
+            if($step == 5 || !$this->requirementsCompleteStatus()){
+                return redirect()->route( 'setup.requirements' );
+            }
+            return redirect()->route( 'setup.database' );
+        } catch (Exception $e) {
+            Log::error('Account page error: ' . $e->getMessage());
+            // If database connection fails, redirect back to database setup
+            return redirect()->route( 'setup.database' )->withErrors(['error' => 'Database connection failed. Please check your credentials.']);
         }
-        if($step == 5 || !$this->requirementsCompleteStatus()){
-            return redirect()->route( 'setup.requirements' );
-        }
-        return redirect()->route( 'setup.database' );
     }
 
     public function accountSubmit(Request $request)
