@@ -146,7 +146,10 @@
                         if (res.success) {
                             toastr.success(res.message);
                             submit_btn.addClass('btn-success').html('Redirecting...');
-                            window.location.href = "{{ route('setup.account') }}";
+                            // Wait 2 seconds before redirecting to allow .env file to be written
+                            setTimeout(function() {
+                                window.location.href = "{{ route('setup.account') }}";
+                            }, 2000);
                         } else if (res.create_database) {
                             toastr.error(res.message);
                             submit_btn.html('Setup Database').prop('disabled', false);
