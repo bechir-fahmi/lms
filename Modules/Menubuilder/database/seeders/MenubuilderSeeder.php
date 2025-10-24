@@ -140,9 +140,29 @@ class MenubuilderSeeder extends Seeder
                 "updated_at" => "2024-05-31 17:15:13",
             ),
         );
-        
-        
-       \DB::table('menus')->insert($menus); 
+
+
+       \DB::table('menus')->insert($menus);
        \DB::table('menu_translations')->insert($menu_translations);
+
+       // Add menu items for footer columns
+       $menu_items = [
+           // Footer Column One
+           ['menu_id' => 10, 'label' => 'About Us', 'link' => '/about', 'parent_id' => null, 'sort' => 1, 'created_at' => now(), 'updated_at' => now()],
+           ['menu_id' => 10, 'label' => 'Contact', 'link' => '/contact', 'parent_id' => null, 'sort' => 2, 'created_at' => now(), 'updated_at' => now()],
+           ['menu_id' => 10, 'label' => 'Courses', 'link' => '/courses', 'parent_id' => null, 'sort' => 3, 'created_at' => now(), 'updated_at' => now()],
+
+           // Footer Column Two
+           ['menu_id' => 13, 'label' => 'Privacy Policy', 'link' => '/privacy-policy', 'parent_id' => null, 'sort' => 1, 'created_at' => now(), 'updated_at' => now()],
+           ['menu_id' => 13, 'label' => 'Terms & Conditions', 'link' => '/terms-conditions', 'parent_id' => null, 'sort' => 2, 'created_at' => now(), 'updated_at' => now()],
+           ['menu_id' => 13, 'label' => 'FAQ', 'link' => '/faq', 'parent_id' => null, 'sort' => 3, 'created_at' => now(), 'updated_at' => now()],
+
+           // Footer Column Three
+           ['menu_id' => 14, 'label' => 'Become Instructor', 'link' => '/become-instructor', 'parent_id' => null, 'sort' => 1, 'created_at' => now(), 'updated_at' => now()],
+           ['menu_id' => 14, 'label' => 'Blog', 'link' => '/blog', 'parent_id' => null, 'sort' => 2, 'created_at' => now(), 'updated_at' => now()],
+           ['menu_id' => 14, 'label' => 'Help Center', 'link' => '/help', 'parent_id' => null, 'sort' => 3, 'created_at' => now(), 'updated_at' => now()],
+       ];
+
+       \DB::table('menu_items')->insert($menu_items);
     }
 }
