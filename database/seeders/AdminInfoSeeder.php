@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Admin;
-use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -15,7 +14,6 @@ class AdminInfoSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = Faker::create();
 
         if (! Admin::first()) {
             $admin = new Admin();
