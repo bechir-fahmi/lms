@@ -13,6 +13,13 @@ class PaymentGatewaySeeder extends Seeder
      */
     public function run(): void
     {
+        // Get default USD currency ID (fallback for all gateways)
+        $usdCurrency = MultiCurrency::where('currency_code', 'USD')->first();
+        $eurCurrency = MultiCurrency::where('currency_code', 'EUR')->first();
+        $tndCurrency = MultiCurrency::where('currency_code', 'TND')->first();
+
+        $defaultCurrencyId = $usdCurrency?->id ?? 1;
+
         $payment_info = [
             'razorpay_key' => 'razorpay_key',
             'razorpay_secret' => 'razorpay_secret',
@@ -21,13 +28,13 @@ class PaymentGatewaySeeder extends Seeder
             'razorpay_charge' => 0.00,
             'razorpay_theme_color' => '#6d0ce4',
             'razorpay_status' => 'inactive',
-            'razorpay_currency_id' => MultiCurrency::where('currency_code', 'INR')->first()?->id,
+            'razorpay_currency_id' => $defaultCurrencyId,
             'razorpay_image' => 'uploads/website-images/razorpay.jpeg',
             'flutterwave_public_key' => 'flutterwave_public_key',
             'flutterwave_secret_key' => 'flutterwave_secret_key',
             'flutterwave_app_name' => 'WebSolutionUs',
             'flutterwave_charge' => 0.00,
-            'flutterwave_currency_id' => MultiCurrency::where('currency_code', 'NGN')->first()?->id,
+            'flutterwave_currency_id' => $defaultCurrencyId,
             'flutterwave_status' => 'inactive',
             'flutterwave_image' => 'uploads/website-images/flutterwave.jpg',
             'paystack_public_key' => 'paystack_public_key',
@@ -35,18 +42,18 @@ class PaymentGatewaySeeder extends Seeder
             'paystack_status' => 'inactive',
             'paystack_charge' => 0.00,
             'paystack_image' => 'uploads/website-images/paystack.png',
-            'paystack_currency_id' => MultiCurrency::where('currency_code', 'NGN')->first()?->id,
+            'paystack_currency_id' => $defaultCurrencyId,
             'mollie_key' => 'mollie_key',
             'mollie_charge' => 0.00,
             'mollie_image' => 'uploads/website-images/mollie.png',
             'mollie_status' => 'inactive',
-            'mollie_currency_id' => MultiCurrency::where('currency_code', 'CAD')->first()?->id,
+            'mollie_currency_id' => $eurCurrency?->id ?? $defaultCurrencyId,
             'instamojo_account_mode' => 'Sandbox',
             'instamojo_api_key' => 'instamojo_api_key',
             'instamojo_auth_token' => 'instamojo_auth_token',
             'instamojo_charge' => 0.00,
             'instamojo_image' => 'uploads/website-images/instamojo.png',
-            'instamojo_currency_id' => MultiCurrency::where('currency_code', 'INR')->first()?->id,
+            'instamojo_currency_id' => $defaultCurrencyId,
             'instamojo_status' => 'inactive',
             'azampay_account_mode' => 'sandbox',
             'azampay_client_id' => 'azampay_client_id',
