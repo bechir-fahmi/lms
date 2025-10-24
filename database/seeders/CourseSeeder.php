@@ -13,6 +13,7 @@ use App\Models\QuizQuestion;
 use App\Models\QuizQuestionAnswer;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class CourseSeeder extends Seeder
 {
@@ -411,12 +412,16 @@ class CourseSeeder extends Seeder
             ),
         );
 
-        $instructorList = array(1001, 1002, 1003, 1004, 1005, 1006, 1009, 1011, 1012);
+        $instructorList = array(1001, 1002, 1003, 1004, 1005, 1006);
+
+        // Get available category IDs
+        $categoryIds = \DB::table('course_categories')->pluck('id')->toArray();
+
         foreach ($coursesNames as $courseName) {
             // create course
             $course = new Course();
             $course->instructor_id = $instructorList[array_rand($instructorList, 1)];
-            $course->category_id = rand(9, 43);
+            $course->category_id = $categoryIds[array_rand($categoryIds)];
             $course->type = "course";
             $course->title = $courseName;
             $course->slug = \Str::slug($courseName);
@@ -439,15 +444,22 @@ class CourseSeeder extends Seeder
             $course->is_approved = "approved";
             $course->save();
             // create course level
-            CourseSelectedLevel::create([
-                'course_id' => $course->id,
-                'level_id' => rand(1, 3)
-            ]);
+            $levelIds = \DB::table('course_levels')->pluck('id')->toArray();
+            if (!empty($levelIds)) {
+                CourseSelectedLevel::create([
+                    'course_id' => $course->id,
+                    'level_id' => $levelIds[array_rand($levelIds)]
+                ]);
+            }
+
             // create course language
-            CourseSelectedLanguage::create([
-                'course_id' => $course->id,
-                'language_id' => rand(1, 3)
-            ]);
+            $languageIds = \DB::table('course_languages')->pluck('id')->toArray();
+            if (!empty($languageIds)) {
+                CourseSelectedLanguage::create([
+                    'course_id' => $course->id,
+                    'language_id' => $languageIds[array_rand($languageIds)]
+                ]);
+            }
 
             foreach($course_chapters as $chapterIndex => $chapter) {
                 $courseChapter = new CourseChapter();
@@ -526,12 +538,14 @@ class CourseSeeder extends Seeder
                                }
                            }
                        }
-                    }else {
+                    }
+                    else {
                         if($chapterItem['type'] == "lesson") {
 
                             $courseLesson = new CourseChapterLesson();
-                            $courseLesson->title = fake()->sentence();
-                            $courseLesson->slug = fake()->slug();
+                            $lessonTitle = $course_chapter_lessons[$index]['title'] ?? 'Lesson ' . ($index + 1);
+                            $courseLesson->title = $lessonTitle;
+                            $courseLesson->slug = Str::slug($lessonTitle);
                             $courseLesson->description = $course_chapter_lessons[$index]['description'];
                             $courseLesson->instructor_id = $course->instructor_id;
                             $courseLesson->course_id = $course->id;
@@ -559,7 +573,7 @@ class CourseSeeder extends Seeder
                                $courseQuiz->instructor_id = $course->instructor_id;
                                $courseQuiz->chapter_id = $courseChapter->id;
                                $courseQuiz->course_id = $course->id;
-                               $courseQuiz->title = fake()->sentence(5);
+                               $courseQuiz->title = $quiz['title'] ?? 'Quiz ' . $index;
                                $courseQuiz->time = $quiz['time'];
                                $courseQuiz->attempt = $quiz['attempt'];
                                $courseQuiz->pass_mark = $quiz['pass_mark'];
@@ -585,27 +599,22 @@ class CourseSeeder extends Seeder
                            }
                        }
                     }
-
-
-                }
-            }
-        }
-
-
-    }
+                } // close foreach course_chapter_items
+            } // close foreach course_chapters
+        } // close foreach coursesNames
+    } // close run()
 
     public function getRandomFilename()
     {
-        $files = \File::files(public_path('/uploads/store/files/1001/my course images/'));  // Get all files from the path
+        // Use placeholder images instead of trying to read from non-existent directory
+        $placeholders = [
+            'uploads/website-images/course-1.jpg',
+            'uploads/website-images/course-2.jpg',
+            'uploads/website-images/course-3.jpg',
+            'uploads/website-images/course-4.jpg',
+            'uploads/website-images/course-5.jpg',
+        ];
 
-        if (empty($files)) {
-            return null; // Return null if no files found
-        }
-
-        // Randomly select a file index
-        $randomIndex = shuffle($files);
-
-        $fileInfo = pathinfo($files[$randomIndex]);  // Get info of selected file
-        return "/uploads/store/files/1001/my course images/".$fileInfo['filename'] . '.' . $fileInfo['extension']; // Build filename
+        return $placeholders[array_rand($placeholders)];
     }
 }
