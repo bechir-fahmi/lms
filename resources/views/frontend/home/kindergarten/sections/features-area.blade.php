@@ -24,7 +24,7 @@
                             </div>
                         </div>
                         <div class="features__icon-five">
-                            <i class="skillgro-video-tutorial"></i>
+                            <i class="FluttLearn-video-tutorial"></i>
                             <img src="{{ asset('frontend/img/icons/h5_features_icon.svg') }}" class="injectable">
                         </div>
                         <div class="features__content-five">
@@ -49,7 +49,7 @@
                             </div>
                         </div>
                         <div class="features__icon-five">
-                            <i class="skillgro-verified"></i>
+                            <i class="FluttLearn-verified"></i>
                             <img src="{{ asset('frontend/img/icons/h5_features_icon.svg') }}" class="injectable">
                         </div>
                         <div class="features__content-five">
@@ -74,7 +74,7 @@
                             </div>
                         </div>
                         <div class="features__icon-five">
-                            <i class="skillgro-instructor"></i>
+                            <i class="FluttLearn-instructor"></i>
                             <img src="{{ asset('frontend/img/icons/h5_features_icon.svg') }}" class="injectable">
                         </div>
                         <div class="features__content-five">
@@ -99,7 +99,7 @@
                             </div>
                         </div>
                         <div class="features__icon-five">
-                            <i class="skillgro-book-1"></i>
+                            <i class="FluttLearn-book-1"></i>
                             <img src="{{ asset('frontend/img/icons/h5_features_icon.svg') }}" class="injectable">
                         </div>
                         <div class="features__content-five">

@@ -5,6 +5,10 @@
 @section('meta_keywords', '')
 
 @section('contents')
+    <!-- breadcrumb-area -->
+    <x-frontend.breadcrumb :title="__('Home')" :links="[['url' => '', 'text' => __('Home')]]" />
+    <!-- breadcrumb-area-end -->
+
     @if ($sectionSetting?->hero_section)
         <!-- banner-area -->
         @include('frontend.home.main.sections.banner-area')
