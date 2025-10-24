@@ -16,8 +16,9 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $companies = ["Google", 'Facebook', 'Apple', 'Microsoft'];
-        $educations = ["Complied Bachelor from Oxford University", 'Complied Master from UA University', 'Complied Phd from Nevada University', 'Complied Master from Stanford University'];
-        // force truncate 
+        $organizations = ["Oxford University", 'UA University', 'Nevada University', 'Stanford University'];
+        $degrees = ["Bachelor of Computer Science", 'Master of Computer Science', 'PhD in Computer Science', 'Master of Software Engineering'];
+        // force truncate
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('users')->truncate();
         \DB::table('user_education')->truncate();
@@ -65,7 +66,10 @@ class UserSeeder extends Seeder
             ]);
             UserEducation::create([
                 'user_id' => 1001,
-                'education' => $educations[$i],
+                'organization' => $organizations[$i],
+                'degree' => $degrees[$i],
+                'start_date' => now()->subYears(4),
+                'end_date' => now()->subYears(2),
             ]);
         }
 
@@ -101,7 +105,10 @@ class UserSeeder extends Seeder
             ]);
             UserEducation::create([
                 'user_id' => 1002,
-                'education' => $educations[$i],
+                'organization' => $organizations[$i],
+                'degree' => $degrees[$i],
+                'start_date' => now()->subYears(4),
+                'end_date' => now()->subYears(2),
             ]);
         }
 
@@ -137,7 +144,10 @@ class UserSeeder extends Seeder
             ]);
             UserEducation::create([
                 'user_id' => 1003,
-                'education' => $educations[$i],
+                'organization' => $organizations[$i],
+                'degree' => $degrees[$i],
+                'start_date' => now()->subYears(4),
+                'end_date' => now()->subYears(2),
             ]);
         }
 
@@ -173,7 +183,10 @@ class UserSeeder extends Seeder
             ]);
             UserEducation::create([
                 'user_id' => 1004,
-                'education' => $educations[$i],
+                'organization' => $organizations[$i],
+                'degree' => $degrees[$i],
+                'start_date' => now()->subYears(4),
+                'end_date' => now()->subYears(2),
             ]);
         }
 
@@ -209,7 +222,10 @@ class UserSeeder extends Seeder
             ]);
             UserEducation::create([
                 'user_id' => 1005,
-                'education' => $educations[$i],
+                'organization' => $organizations[$i],
+                'degree' => $degrees[$i],
+                'start_date' => now()->subYears(4),
+                'end_date' => now()->subYears(2),
             ]);
         }
 
@@ -224,7 +240,7 @@ class UserSeeder extends Seeder
             'bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
 
             developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
-            
+
             a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
             ',
             'job_title' => 'Developer',
@@ -245,7 +261,10 @@ class UserSeeder extends Seeder
             ]);
             UserEducation::create([
                 'user_id' => 1006,
-                'education' => $educations[$i],
+                'organization' => $organizations[$i],
+                'degree' => $degrees[$i],
+                'start_date' => now()->subYears(4),
+                'end_date' => now()->subYears(2),
             ]);
         }
     }
