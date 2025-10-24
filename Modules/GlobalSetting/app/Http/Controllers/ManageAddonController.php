@@ -141,7 +141,7 @@ class ManageAddonController extends Controller
             // check if addon is for the current application
             if (isset($addonFileJson['item'])) {
                 $item = $addonFileJson['item'];
-                if (!(isset($item['alias']) && $item['alias'] == 'skillgro' && isset($item['product_id']) && $item['product_id'] == InstallerInfo::ITEM_ID->value)) {
+                if (!(isset($item['alias']) && $item['alias'] == 'FluttLearn' && isset($item['product_id']) && $item['product_id'] == InstallerInfo::ITEM_ID->value)) {
                     return redirect()->back()->with([
                         'message' => __('Addon is not for suitable for this application'),
                         'alert-type' => 'error',
