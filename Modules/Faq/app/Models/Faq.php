@@ -18,12 +18,12 @@ class Faq extends Model
 
     public function getQuestionAttribute(): ?string
     {
-        return $this->translation->question;
+        return $this->translation?->question ?? '';
     }
 
     public function getAnswerAttribute(): ?string
     {
-        return $this->translation->answer;
+        return $this->translation?->answer ?? '';
     }
 
     public function translation(): ?HasOne
