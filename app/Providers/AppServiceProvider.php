@@ -59,7 +59,9 @@ class AppServiceProvider extends ServiceProvider {
         Paginator::useBootstrapFour();
 
         // Define default homepage based on site_theme from setting, with fallback
-        define('DEFAULT_HOMEPAGE', $setting?->site_theme ?? ThemeList::MAIN->value);
+        if (!defined('DEFAULT_HOMEPAGE')) {
+            define('DEFAULT_HOMEPAGE', $setting?->site_theme ?? ThemeList::MAIN->value);
+        }
     }
 
     protected function registerBladeDirectives() {
